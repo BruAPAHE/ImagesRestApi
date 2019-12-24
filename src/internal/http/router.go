@@ -17,5 +17,7 @@ func New() *Http {
 
 // Router List ...
 func (web *Http) RegistrationRouters() {
+	// API
 	web.Router.HandleFunc("/v1/core/download/", MultipleMiddleware(imagesDownload(), middlewareList...)).Methods("GET")
+	// WEB
 }

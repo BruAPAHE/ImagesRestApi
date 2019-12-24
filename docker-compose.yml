@@ -11,9 +11,8 @@ services:
       # APP
       - "APP_PORT=:8080"
       # MongoDB
-      - "DB_DSN=mongodb://mongodb:27017"
-      - "DB_DATABASE=core"
-      - "DB_COLLECTION=core"
+      - "DB_MONGO_DSN=mongodb://mongodb:27017"
+      - "DB_MONGO_DATABASE=images"
     depends_on:
       - mongodb
     links:
