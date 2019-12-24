@@ -1,0 +1,25 @@
+version: '3'
+services:
+  app:
+    image: "apahe/parser"
+    volumes:
+      - ./src/:/go/src/parser/src/
+    ports:
+      - "8091:8080"
+    command: "tail -f /dev/null"
+    environment:
+      # APP
+      - "APP_PORT=:8080"
+      # MongoDB
+      - "DB_DSN=mongodb://mongodb:27017"
+      - "DB_DATABASE=core"
+      - "DB_COLLECTION=core"
+    depends_on:
+      - mongodb
+    links:
+      - mongodb
+  mongodb:
+    image: mongo
+    container_name: 'mongodb'
+    ports:
+      - 27017:27017
