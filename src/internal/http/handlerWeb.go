@@ -12,6 +12,6 @@ type ViewData struct {
 func mainHandler() http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
 
-//TODO: не дописал =(
+    //TODO: не дописал =(
 	}
 }
