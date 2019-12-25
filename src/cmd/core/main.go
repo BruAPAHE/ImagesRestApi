@@ -1,7 +1,7 @@
 package main
 
 import (
-	app "ImagesRestApi/src/internal/application"
+	"ImagesRestApi/src/internal/app"
 	"log"
 )
 

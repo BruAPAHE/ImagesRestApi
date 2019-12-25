@@ -1,6 +1,7 @@
 package database
 
 import (
+	"context"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
@@ -20,7 +21,15 @@ func init() {
 
 	client, err := mongo.NewClient(optionsDB)
 	if err != nil {
+		log.Printf("Cannot make connect: %v", err)
+	}
+
+	if err = client.Connect(context.TODO()); err != nil {
 		log.Printf("Cannot init connect to MongoDB: %v", err)
+	}
+
+	if err = client.Ping(context.TODO(), nil); err != nil {
+		log.Fatal(err)
 	}
 
 	ImagesConnection = client.Database(config.Database)

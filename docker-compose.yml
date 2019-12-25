@@ -1,12 +1,12 @@
 version: '3'
 services:
   app:
-    image: "apahe/parser"
+    image: "apahe/images"
+    container_name: 'app'
     volumes:
-      - ./src/:/go/src/parser/src/
+      - ./src:/go/src/app
     ports:
       - "8091:8080"
-    command: "tail -f /dev/null"
     environment:
       # APP
       - "APP_PORT=:8080"
@@ -18,7 +18,9 @@ services:
     links:
       - mongodb
   mongodb:
-    image: mongo
+    image: mongo:latest
     container_name: 'mongodb'
+    expose:
+      - '27017'
     ports:
       - 27017:27017

@@ -4,7 +4,6 @@ import (
 	router "ImagesRestApi/src/internal/http"
 	"context"
 	"log"
-	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -26,7 +25,6 @@ func New() *App {
 
 // Start ...
 func (app *App) Start() error {
-
 	PORT := os.Getenv("APP_PORT")
 
 	app.http.RegistrationRouters()
@@ -36,15 +34,10 @@ func (app *App) Start() error {
 		Handler: app.http.Router,
 	}
 
-	listener, err := net.Listen("tcp4", PORT)
-	if err != nil {
-		log.Printf("Failed to listen and serve: %+v", err)
-	}
 	go func() {
 		log.Printf("Listening on %s...\n", PORT)
-
-		if err := app.httpServer.Serve(listener); err != nil {
-			log.Printf("Failed to listen and serve: %+v", err)
+		if err := app.httpServer.ListenAndServe(); err != nil {
+			log.Fatalf("Failed to listen and serve: %+v", err)
 		}
 	}()
 
@@ -59,4 +52,3 @@ func (app *App) Start() error {
 
 	return app.httpServer.Shutdown(ctx)
 }
-

@@ -3,21 +3,23 @@ package http
 import (
 	"ImagesRestApi/src/internal/model"
 	"ImagesRestApi/src/internal/repository"
+	"encoding/json"
 	"log"
 	"net/http"
 )
 
-func imagesDownload() http.HandlerFunc {
+func ImagesDownload() http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
-		var response []byte
+		var response ResponseBody
 		var url string
 
+		url = request.URL.Query().Get("url")
 
 		imageModel := model.NewImageModel()
 
 		repo := repository.NewImages(imageModel)
 
-		if err := repo.DownloadImages(); err != nil {
+		if err := repo.DownloadByUrl(url); err != nil {
 			response, err := MakeJSONResponse(http.StatusInternalServerError, err.Error())
 			if err != nil {
 				log.Printf("Cannot marshal to json: %v", err)
@@ -25,14 +27,16 @@ func imagesDownload() http.HandlerFunc {
 
 			writer.WriteHeader(http.StatusNotFound)
 			writer.Write(response)
+
+			return
 		}
 
-		response, err := MakeJSONResponse(http.StatusOK, "OK")
-		if err != nil {
-			log.Printf("Cannot marshal to json: %v", err)
-		}
+		response.Meta.Code = http.StatusOK
+		response.Meta.Message = "File was add to DB. Successful"
 
-		writer.WriteHeader(http.StatusOK)
-		writer.Write(response)
+		if err := json.NewEncoder(writer).Encode(response); err != nil {
+			writer.WriteHeader(500)
+			return
+		}
 	}
 }

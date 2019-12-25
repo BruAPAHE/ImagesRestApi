@@ -8,7 +8,7 @@ import (
 type Middleware func(http.HandlerFunc) http.HandlerFunc
 
 var middlewareList = []Middleware{
-	EmptyParamsMiddleware,
+	existUrlParamsMiddleware,
 	MainMiddleware,
 }
 
@@ -29,12 +29,10 @@ func MultipleMiddleware(handle http.HandlerFunc, middleware ...Middleware) http.
 	return wrapped
 }
 
-
-
-func EmptyParamsMiddleware(handler http.HandlerFunc) http.HandlerFunc {
+func existUrlParamsMiddleware(handler http.HandlerFunc) http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
-		if len(request.URL.Query()) == 0 {
-			response, err := MakeJSONResponse(http.StatusBadRequest, "Bad params")
+		if request.URL.Query().Get("url") == "" {
+			response, err := MakeJSONResponse(http.StatusBadRequest, "Bad params: `url` is empty")
 			if err != nil {
 				log.Printf("Cannot make response: %+v", err)
 			}
